@@ -23,11 +23,63 @@ body {
     height: 100%;
     pointer-events: none; /* Prevents mouse events on the SVG */
     circle {
-        fill: steelblue; /* Blue color for the circle */
+        fill: steelblue; /* Blue color for the circle, default color */
         stroke: #ffffff; /* White border for the circle */
         stroke-width: 3px; /* Border width */
         pointer-events: auto; /* Allows mouse events on the circle */
+
+        --color-departures: steelblue;
+        --color-arrivals: darkorange;
+        --color: color-mix(
+            in oklch,
+            var(--color-departures) calc(100% * var(--departure-ratio)),
+            var(--color-arrivals)
+        );
+        fill: var(--color);
     }
+}
+
+.legend-container {
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.legend {
+    --color-departures: #4682b4; /* steelblue */
+    --color-balanced: #c583c5; /* purple for the middle section */
+    --color-arrivals: #ff8c00; /* darkorange */
+    
+    display: flex;
+    height: 40px;
+    width: 100%;
+    border-collapse: collapse;
+    gap: 1px;
+}
+
+.legend-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 12px;
+}
+
+.departures {
+    background-color: var(--color-departures);
+    justify-content: flex-start;
+}
+
+.balanced {
+    background-color: var(--color-balanced);
+    justify-content: center;
+}
+
+.arrivals {
+    background-color: var(--color-arrivals);
+    justify-content: flex-end;
 }
 
 /* Format the time slider */

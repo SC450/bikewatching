@@ -89,7 +89,7 @@ map.on('load', async () => {
         type: 'line',
         source: 'cambridge_route',
         paint: {
-            'line-color': '#ff0000',
+            'line-color': '#48b32b', //'#ff0000',
             'line-width': 4,
             'line-opacity': 0.6,
         },
@@ -118,6 +118,9 @@ map.on('load', async () => {
     // Add bicycle stations to the map
     const svg = d3.select('#map').select('svg');
 
+    // Calculate station flow
+    let stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+
     // Append circles to the SVG for each station
     const circles = svg
         .selectAll('circle')
@@ -129,6 +132,9 @@ map.on('load', async () => {
         .attr('stroke', 'white') // Circle border color
         .attr('stroke-width', 1) // Circle border thickness
         .attr('opacity', 0.8) // Circle opacity
+        .style('--departure-ratio', (d) =>
+            stationFlow(d.departures / d.totalTraffic),
+        );
 
     // Function to update circle positions when the map moves/zooms
     function updatePositions() {
@@ -240,7 +246,10 @@ map.on('load', async () => {
         circles
             .data(filteredStations, (d) => d.short_name) // Ensure D3 tracks elements correctly
             .join('circle') // Ensure the data is bound correctly
-            .attr('r', (d) => radiusScale(d.totalTraffic)); // Update circle sizes
+            .attr('r', (d) => radiusScale(d.totalTraffic)) // Update circle sizes
+            .style('--departure-ratio', (d) =>
+                stationFlow(d.departures / d.totalTraffic),
+            );
     }
 
     timeSlider.addEventListener('input', updateTimeDisplay);
